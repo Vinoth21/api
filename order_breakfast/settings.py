@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+#import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,13 +26,14 @@ SECRET_KEY = '-t^0f4_%!7rjije*)g+(u9vkgv!$c&to5sobn-6c=plv)0kh=p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['shielded-shore-34760.herokuapp.com']
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'orderapp',
+    'corsheaders',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,6 +44,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -49,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'order_breakfast.urls'
@@ -74,6 +80,14 @@ WSGI_APPLICATION = 'order_breakfast.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+
+import dj_database_url
+
+DATABASES = {
+      'default': dj_database_url.config(
+          default='sqlite:////{0}'.format(os.path.join(BASE_DIR, 'db.sqlite3'))
+      )
+}
 
 DATABASES = {
     'default': {
@@ -124,3 +138,24 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_ROOT = "media"
 MEDIA_URL ="/media/"
+
+# Activate Django-Heroku.
+#django_heroku.settings(locals())
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+# Configure Django App for Heroku.
+import django_heroku
+django_heroku.settings(locals())
+TEST_RUNNER = 'django_heroku.HerokuDiscoverRunner'
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3030',
+)
+CORS_ORIGIN_REGEX_WHITELIST = (
+    'localhost:3030',
+)
