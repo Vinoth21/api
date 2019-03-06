@@ -12,7 +12,7 @@ class MenuViewset(viewsets.ModelViewSet):
 
     queryset = Menu.objects.all().order_by('-votes')
     serializer_class = MenuSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    #permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
     def perform_create(self, serializer):
@@ -22,6 +22,29 @@ class MenuViewset(viewsets.ModelViewSet):
          except:
              raise PermissionDenied
              #print ("Only admin has the privilage")
+    
+    def get_permissions(self):
+        if self.action == 'list':
+            permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+        else:
+            permission_classes = (permissions.IsAdminUser,)
+        return [permission() for permission in permission_classes]
+
+
+class MenuDetailViewset(viewsets.ModelViewSet):
+
+    queryset = Menu.objects.all().order_by('-votes')
+    serializer_class = MenuSerializer
+    #permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def get_permissions(self):
+        if self.action == 'retrieve':
+            permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+        else:
+            permission_classes = (permissions.IsAdminUser,)
+        return [permission() for permission in permission_classes]
+
+
 
 class UserObjectViewset(viewsets.ModelViewSet):
     queryset = UserObjects.objects.all()
@@ -34,7 +57,15 @@ class UserObjectViewset(viewsets.ModelViewSet):
 class OrderViewset(viewsets.ModelViewSet):
     queryset = Menu.objects.all().order_by('-votes')[:1]
     serializer_class = OrderSerializer
-    permission_class = (permissions.IsAdminUser)
+    #permission_class = (permissions.IsAdminUser)
+  
+    def get_permissions(self):
+        if self.action == 'retrieve':
+            permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+        else:
+            permission_classes = (permissions.IsAdminUser,)
+        return [permission() for permission in permission_classes]
+
 
 """
 

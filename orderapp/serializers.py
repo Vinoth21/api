@@ -6,8 +6,8 @@ from datetime import date
 class MenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Menu
-        #url = serializers.HyperlinkedIdentityField(view_name='menu-list', read_only=True)
-        fields = ('item', 'price','image')
+        url = serializers.HyperlinkedIdentityField(view_name='menu-list', read_only=True)
+        fields = ('item', 'price','image','url')
 
 class UserObjectSerializer(serializers.ModelSerializer):
     class Meta:
